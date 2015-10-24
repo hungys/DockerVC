@@ -3,6 +3,7 @@ from core.permission import auth
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from md5 import md5
+import random
 import config
 import json
 import jwt
@@ -15,16 +16,27 @@ def get_workunit(app_id):
     if app_data is None:
         abort(404)
 
+    # ugly random version
+    input_count = g.db.input.find({"status": {"$ne": "finished"}}).count()
+    rnd_skip = random.randint(0, input_count - 1)
+    input_data = g.db.input.find({"status": {"$ne": "finished"}}).limit(-1).skip(rnd_skip).next()
+
     new_workunit = {
-        "input_id": "",
+        "input_id": str(input_data["_id"]),
         "user_id": "",
         "status": "assigned",
         "output_url": ""
     }
+
     workunit_id = g.db.workunit.insert(new_workunit)
+    if input_data["status"] == "created":
+        g.db.input.update({"_id": input_data["_id"]}, {"$set": {"status": "assigned"}})
 
     resp_body = {
-        "workunit_id": str(workunit_id)
+        "workunit_id": str(workunit_id),
+        "dockerfile_url": app_data["dockerfile_url"],
+        "input_id": str(input_data["_id"]),
+        "input_url": input_data["input_url"]
     }
 
     resp = make_response(json.dumps(resp_body), 200)
