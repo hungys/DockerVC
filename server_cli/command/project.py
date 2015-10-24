@@ -5,7 +5,7 @@ def project_list(base_url, args):
     try:
         resp = json.loads(urllib2.urlopen(base_url + "/api/project").read())
         print "Codename\tName\tSummary"
-        print "=" * 31
+        print "=" * 50
         for project in resp:
             print project["codename"] + "\t" + \
                 project["name"] + "\t" + project["summary"]

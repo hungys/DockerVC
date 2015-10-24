@@ -33,7 +33,7 @@ def create_input(app_id):
         "application_id": app_data["_id"],
         "status": "created",
         "input_url": req_body["input_url"],
-        "output_url": req_body["output_url"]
+        "output_url": ""
     }
     input_id = g.db.input.insert(new_input)
 
