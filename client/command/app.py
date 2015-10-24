@@ -35,6 +35,7 @@ def app_start(args):
                 start_container()
                 time.sleep(3)
             else:
+                print "No more workunit"
                 break
         except urllib2.HTTPError as e:
             if e.code == 404:
