@@ -13,7 +13,7 @@ def register_user():
     req_body = json.loads(request.data)
     password_hashed = md5(req_body["password"]).hexdigest()
 
-    if check_user_registered(req_body["email"]):
+    if check_user_exists(req_body["email"]):
         resp = make_response(json.dumps({"msg": "Email used"}), 400)
         resp.headers["Content-Type"] = "application/json"
         return resp
@@ -54,7 +54,7 @@ def request_token():
     resp.headers["Content-Type"] = "application/json"
     return resp
 
-def check_user_registered(email):
+def check_user_exists(email):
     return g.db.user.find({"email": email}).count() > 0
 
 def generate_token(user_id):

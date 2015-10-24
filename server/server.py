@@ -14,6 +14,8 @@ from core.user import user
 app.register_blueprint(user, url_prefix="/api")
 from core.project import project
 app.register_blueprint(project, url_prefix="/api")
+from core.application import application
+app.register_blueprint(application, url_prefix="/api")
 
 @app.before_request
 def before_request():

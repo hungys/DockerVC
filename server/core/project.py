@@ -21,7 +21,7 @@ def get_all_projects():
 def create_project():
     req_body = json.loads(request.data)
 
-    if check_codename_existed(req_body["codename"]):
+    if check_project_exists(req_body["codename"]):
         resp = make_response(json.dumps({"msg": "Codename used"}), 400)
         resp.headers["Content-Type"] = "application/json"
         return resp
@@ -46,7 +46,7 @@ def update_project(codename):
     req_body = json.loads(request.data)
     set_body = {}
 
-    if check_codename_existed(codename) is False:
+    if check_project_exists(codename) is False:
         abort(404)
 
     if "name" in req_body:
@@ -60,12 +60,15 @@ def update_project(codename):
 
 @project.route('/project/<codename>', methods=['DELETE'])
 def delete_project(codename):
-    if check_codename_existed(codename) is False:
+    if check_project_exists(codename) is False:
         abort(404)
 
+    project_data = g.db.project.find_one({"codename": codename})
+
     g.db.project.remove({"codename": codename})
+    g.db.project.remove({"project_id": project_data["_id"]}, multi=True)
 
     return '', 200
 
-def check_codename_existed(codename):
+def check_project_exists(codename):
     return g.db.project.find({"codename": codename}).count() > 0
