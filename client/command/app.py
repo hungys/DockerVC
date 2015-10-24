@@ -80,11 +80,16 @@ ENV WORKUNIT_ID %s
     print "Dockerfile generated"
 
 def start_container():
-    print "Building docker image..."
-    os.system("sudo docker build -t dockervc/workunit .")
-    print "Starting docker container..."
-    os.system("sudo docker run dockervc/workunit")
-    print "Workunit fished\n"
+    if os.name == "posix":
+        print "Building docker image..."
+        os.system("sudo docker build -t dockervc/workunit .")
+        print "Starting docker container..."
+        os.system("sudo docker run dockervc/workunit")
+        print "Workunit fished\n"
+    elif os.name == "nt":
+        os.system("")
+    else:
+        print "[Error] unsupported platform"
 
 def execute(args):
     if args[1] == "list":
