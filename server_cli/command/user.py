@@ -1,7 +1,8 @@
 import json
 import urllib2
+import config
 
-def user_register(base_url, args):
+def user_register(args):
     email = raw_input("Email: ")
     password = raw_input("Password: ")
 
@@ -10,7 +11,7 @@ def user_register(base_url, args):
         "password": password
     }
 
-    req = urllib2.Request(base_url + "/api/user", json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/user", json.dumps(payload))
     req.add_header("Content-Type", "application/json")
 
     try:
@@ -25,7 +26,7 @@ def user_register(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def user_auth(base_url, args):
+def user_auth(args):
     email = raw_input("Email: ")
     password = raw_input("Password: ")
 
@@ -34,7 +35,7 @@ def user_auth(base_url, args):
         "password": password
     }
 
-    req = urllib2.Request(base_url + "/api/user/authentication", json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/user/authentication", json.dumps(payload))
     req.add_header("Content-Type", "application/json")
 
     try:
@@ -49,8 +50,8 @@ def user_auth(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def execute(base_url, args):
+def execute(args):
     if args[1] == "register":
-        user_register(base_url, args[2:])
+        user_register(args[2:])
     elif args[1] == "auth":
-        user_auth(base_url, args[2:])
+        user_auth(args[2:])

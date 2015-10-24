@@ -1,9 +1,10 @@
 import json
 import urllib2
+import config
 
-def input_list(base_url, args):
+def input_list(args):
     try:
-        resp = json.loads(urllib2.urlopen(base_url + "/api/app/" + args[0] + "/input").read())
+        resp = json.loads(urllib2.urlopen(config.server_url + "/api/app/" + args[0] + "/input").read())
         print "Id\tStatus"
         print "=" * 50
         for app in resp:
@@ -16,14 +17,14 @@ def input_list(base_url, args):
     except:
         print "Error: unexpected error"
 
-def input_create(base_url, args):
+def input_create(args):
     input_url = raw_input("Input URL: ")
 
     payload = {
         "input_url": input_url
     }
 
-    req = urllib2.Request(base_url + "/api/app/" + args[0] + "/input", json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/app/" + args[0] + "/input", json.dumps(payload))
     req.add_header("Content-Type", "application/json")
 
     try:
@@ -37,7 +38,7 @@ def input_create(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def input_update(base_url, args):
+def input_update(args):
     print "[Hint] enter if no change"
     input_url = raw_input("Input URL: ")
 
@@ -45,7 +46,7 @@ def input_update(base_url, args):
         "input_url": input_url
     }
 
-    req = urllib2.Request(base_url + "/api/input/" + args[0], json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/input/" + args[0], json.dumps(payload))
     req.get_method = lambda:'PUT'
     req.add_header("Content-Type", "application/json")
 
@@ -60,8 +61,8 @@ def input_update(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def input_delete(base_url, args):
-    req = urllib2.Request(base_url + "/api/input/" + args[0])
+def input_delete(args):
+    req = urllib2.Request(config.server_url + "/api/input/" + args[0])
     req.get_method = lambda:'DELETE'
     req.add_header("Content-Type", "application/json")
 
@@ -76,12 +77,12 @@ def input_delete(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def execute(base_url, args):
+def execute(args):
     if args[1] == "list":
-        input_list(base_url, args[2:])
+        input_list(args[2:])
     elif args[1] == "create":
-        input_create(base_url, args[2:])
+        input_create(args[2:])
     elif args[1] == "update":
-        input_update(base_url, args[2:])
+        input_update(args[2:])
     elif args[1] == "delete":
-        input_delete(base_url, args[2:])
+        input_delete(args[2:])

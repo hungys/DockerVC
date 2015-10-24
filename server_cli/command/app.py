@@ -1,9 +1,10 @@
 import json
 import urllib2
+import config
 
-def app_list(base_url, args):
+def app_list(args):
     try:
-        resp = json.loads(urllib2.urlopen(base_url + "/api/project/" + args[0] + "/app").read())
+        resp = json.loads(urllib2.urlopen(config.server_url + "/api/project/" + args[0] + "/app").read())
         print "Id\tName\tPlatform\tSummary"
         print "=" * 50
         for app in resp:
@@ -17,7 +18,7 @@ def app_list(base_url, args):
     except:
         print "Error: unexpected error"
 
-def app_create(base_url, args):
+def app_create(args):
     name = raw_input("App name: ")
     platform = raw_input("App platform (windows/linux): ")
     summary = raw_input("App summary: ")
@@ -30,7 +31,7 @@ def app_create(base_url, args):
         "dockerfile_url": dockerfile_url
     }
 
-    req = urllib2.Request(base_url + "/api/project/" + args[0] + "/app", json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/project/" + args[0] + "/app", json.dumps(payload))
     req.add_header("Content-Type", "application/json")
 
     try:
@@ -44,7 +45,7 @@ def app_create(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def app_update(base_url, args):
+def app_update(args):
     print "[Hint] enter if no change"
     name = raw_input("App name: ")
     platform = raw_input("App platform (windows/linux): ")
@@ -61,7 +62,7 @@ def app_update(base_url, args):
     if len(dockerfile_url) > 0:
         payload["dockerfile_url"] = dockerfile_url
 
-    req = urllib2.Request(base_url + "/api/app/" + args[0], json.dumps(payload))
+    req = urllib2.Request(config.server_url + "/api/app/" + args[0], json.dumps(payload))
     req.get_method = lambda:'PUT'
     req.add_header("Content-Type", "application/json")
 
@@ -76,8 +77,8 @@ def app_update(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def app_delete(base_url, args):
-    req = urllib2.Request(base_url + "/api/app/" + args[0])
+def app_delete(args):
+    req = urllib2.Request(config.server_url + "/api/app/" + args[0])
     req.get_method = lambda:'DELETE'
     req.add_header("Content-Type", "application/json")
 
@@ -92,12 +93,12 @@ def app_delete(base_url, args):
     except:
         print "[Error] unexpected error"
 
-def execute(base_url, args):
+def execute(args):
     if args[1] == "list":
-        app_list(base_url, args[2:])
+        app_list(args[2:])
     elif args[1] == "create":
-        app_create(base_url, args[2:])
+        app_create(args[2:])
     elif args[1] == "update":
-        app_update(base_url, args[2:])
+        app_update(args[2:])
     elif args[1] == "delete":
-        app_delete(base_url, args[2:])
+        app_delete(args[2:])

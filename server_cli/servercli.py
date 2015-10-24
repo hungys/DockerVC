@@ -4,18 +4,16 @@ import command.project as mod_project
 import command.app as mod_app
 import command.input as mod_input
 
-base_url = "http://localhost:5000"
-
 def execute_command(command):
     token = command.split(" ")
     if token[0] == "user":
-        mod_user.execute(base_url, token)
+        mod_user.execute(token)
     elif token[0] == "project":
-        mod_project.execute(base_url, token)
+        mod_project.execute(token)
     elif token[0] == "app":
-        mod_app.execute(base_url, token)
+        mod_app.execute(token)
     elif token[0] == "input":
-        mod_input.execute(base_url, token)
+        mod_input.execute(token)
     elif token[0] == "exit":
         sys.exit(0)
 
