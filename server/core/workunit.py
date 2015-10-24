@@ -60,6 +60,12 @@ def update_workunit(workunit_id):
         set_body["output_url"] = req_body["output_url"]
         if not set_body["output_url"].startswith("http"):
             set_body["output_url"] = azure_storage.upload_from_text("outputs", base64.decodestring(set_body["output_url"]))
+            workunit_data = g.db.workunit.find_one({"_id": ObjectId(workunit_id)})
+            payload = {
+                "workunit_id": workunit_id,
+                "input_id": workunit_data["input_id"]
+            }
+            azure_storage.put_to_queue(config.AZURE_QUEUE_NAME, json.dumps(payload))
 
     g.db.workunit.update({"_id": ObjectId(workunit_id)}, {"$set": set_body})
 

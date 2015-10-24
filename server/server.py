@@ -28,7 +28,6 @@ def before_request():
 
     g.user_id = None
     auth_header = request.headers.get("Authorization")
-    print auth_header
     if auth_header is not None and auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
         payload = jwt.decode(token, config.SERVER_SECRET, algorithms=['HS256'])
