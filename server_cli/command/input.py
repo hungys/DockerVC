@@ -1,5 +1,6 @@
 import json
 import urllib2
+import base64
 import config
 
 def input_list(args):
@@ -19,6 +20,14 @@ def input_list(args):
 
 def input_create(args):
     input_url = raw_input("Input URL: ")
+
+    if not input_url.startswith("http"):
+        try:
+            with open(input_url, "rb") as inputfile:
+                input_url = base64.b64encode(inputfile.read())
+        except:
+            print "[Error] fail to load local input file"
+            return
 
     payload = {
         "input_url": input_url
@@ -45,6 +54,14 @@ def input_update(args):
     payload = {
         "input_url": input_url
     }
+
+    if not input_url.startswith("http"):
+        try:
+            with open(input_url, "rb") as inputfile:
+                payload["input_url"] = base64.b64encode(inputfile.read())
+        except:
+            print "[Error] fail to load local input file"
+            return
 
     req = urllib2.Request(config.server_url + "/api/input/" + args[0], json.dumps(payload))
     req.get_method = lambda:'PUT'

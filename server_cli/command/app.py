@@ -1,5 +1,6 @@
 import json
 import urllib2
+import base64
 import config
 
 def app_list(args):
@@ -23,6 +24,14 @@ def app_create(args):
     platform = raw_input("App platform (windows/linux): ")
     summary = raw_input("App summary: ")
     dockerfile_url = raw_input("Dockerfile URL: ")
+
+    if not dockerfile_url.startswith("http"):
+        try:
+            with open(dockerfile_url, "rb") as dockerfile:
+                dockerfile_url = base64.b64encode(dockerfile.read())
+        except:
+            print "[Error] fail to load local Dockerfile"
+            return
 
     payload = {
         "name": name,
@@ -61,6 +70,13 @@ def app_update(args):
         payload["summary"] = summary
     if len(dockerfile_url) > 0:
         payload["dockerfile_url"] = dockerfile_url
+        if not dockerfile_url.startswith("http"):
+            try:
+                with open(dockerfile_url, "rb") as dockerfile:
+                    payload["dockerfile_url"] = base64.b64encode(dockerfile.read())
+            except:
+                print "[Error] fail to load local Dockerfile"
+                return
 
     req = urllib2.Request(config.server_url + "/api/app/" + args[0], json.dumps(payload))
     req.get_method = lambda:'PUT'

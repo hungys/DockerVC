@@ -1,10 +1,12 @@
 from flask import Blueprint, g, make_response, abort, request
 from core.permission import auth
+from helper import azure_storage
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from md5 import md5
 import config
 import json
+import base64
 import jwt
 
 input = Blueprint("input", __name__)
@@ -35,6 +37,10 @@ def create_input(app_id):
         "input_url": req_body["input_url"],
         "output_url": ""
     }
+
+    if not new_input["input_url"].startswith("http"):
+        new_input["input_url"] = azure_storage.upload_from_text("inputs", base64.decodestring(new_input["input_url"]))
+
     input_id = g.db.input.insert(new_input)
 
     resp_body = {
@@ -57,6 +63,8 @@ def update_input(input_id):
         set_body["status"] = req_body["status"]
     if "input_url" in req_body:
         set_body["input_url"] = req_body["input_url"]
+        if not set_body["input_url"].startswith("http"):
+            set_body["input_url"] = azure_storage.upload_from_text("inputs", base64.decodestring(set_body["input_url"]))
     if "output_url" in req_body:
         set_body["output_url"] = req_body["output_url"]
 

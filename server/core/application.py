@@ -1,11 +1,13 @@
 from flask import Blueprint, g, make_response, abort, request
 from core.permission import auth
+from helper import azure_storage
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from md5 import md5
 import config
 import json
 import jwt
+import base64
 
 application = Blueprint("application", __name__)
 
@@ -36,6 +38,10 @@ def create_app(codename):
         "platform": req_body["platform"],
         "dockerfile_url": req_body["dockerfile_url"]
     }
+
+    if not new_app["dockerfile_url"].startswith("http"):
+        new_app["dockerfile_url"] = azure_storage.upload_from_text("dockerfiles", base64.decodestring(new_app["dockerfile_url"]))
+
     app_id = g.db.application.insert(new_app)
 
     resp_body = {
@@ -62,6 +68,8 @@ def update_app(app_id):
         set_body["platform"] = req_body["platform"]
     if "dockerfile_url" in req_body:
         set_body["dockerfile_url"] = req_body["dockerfile_url"]
+        if not set_body["dockerfile_url"].startswith("http"):
+            set_body["dockerfile_url"] = azure_storage.upload_from_text("dockerfiles", base64.decodestring(set_body["dockerfile_url"]))
 
     g.db.application.update({"_id": ObjectId(app_id)}, {"$set": set_body})
 
