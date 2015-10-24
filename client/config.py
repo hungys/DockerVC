@@ -1,3 +1,3 @@
-server_url = "http://localhost:5000"
+server_url = "http://dockervc.cloudapp.net:5000"
 email = ""
 accesstoken = ""

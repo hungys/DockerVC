@@ -2,7 +2,6 @@ import sys
 import command.user as mod_user
 import command.project as mod_project
 import command.app as mod_app
-import command.input as mod_input
 
 def execute_command(command):
     token = command.split(" ")

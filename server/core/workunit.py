@@ -1,11 +1,13 @@
 from flask import Blueprint, g, make_response, abort, request
 from core.permission import auth
+from helper import azure_storage
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from md5 import md5
 import random
 import config
 import json
+import base64
 import jwt
 
 workunit = Blueprint("workunit", __name__)
@@ -56,6 +58,8 @@ def update_workunit(workunit_id):
         set_body["status"] = req_body["status"]
     if "output_url" in req_body:
         set_body["output_url"] = req_body["output_url"]
+        if not set_body["output_url"].startswith("http"):
+            set_body["output_url"] = azure_storage.upload_from_text("outputs", base64.decodestring(set_body["output_url"]))
 
     g.db.workunit.update({"_id": ObjectId(workunit_id)}, {"$set": set_body})
 

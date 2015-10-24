@@ -2,6 +2,7 @@ import json
 import urllib2
 import time
 import config
+import os
 
 def app_list(args):
     try:
@@ -22,23 +23,67 @@ def app_list(args):
 def app_start(args):
     while True:
         try:
-            resp = json.loads(urllib2.urlopen(config.server_url + "/api/app/" + args[0] + "/workunit").read())
+            req = urllib2.Request(config.server_url + "/api/app/" + args[0] + "/workunit")
+            req.add_header("Content-Type", "application/json")
+            req.add_header("Authorization", "Bearer " + config.accesstoken)
+            resp = json.loads(urllib2.urlopen(req).read())
             if resp["workunit_id"] != "-1":
                 print "Get a new work!"
                 print "Workunit ID: " + resp["workunit_id"]
                 print "Input ID: " + resp["input_id"]
-                time.sleep(2)
+                generate_dockerfile(resp["dockerfile_url"], resp["input_url"], resp["workunit_id"])
+                start_container()
+                time.sleep(3)
             else:
                 break
         except urllib2.HTTPError as e:
             if e.code == 404:
                 print "[Error] app not found"
+            elif e.code == 403:
+                print "[Error] you're not logged in"
             else:
                 print "[Error] status code = " + str(e.code)
+            break
         except KeyboardInterrupt:
             break
         except:
             print "Error: unexpected error"
+            break
+
+def generate_dockerfile(dockerfile_url, input_url, workunit_id):
+    dockerfile = urllib2.urlopen(dockerfile_url).read()
+
+    init_script = """RUN apt-get update && apt-get install -y python && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /dockervc
+ENV PATH /dockervc:$PATH
+COPY script/download.py /dockervc/download
+COPY script/upload.py /dockervc/upload
+COPY script/report.py /dockervc/report
+RUN chmod +x /dockervc/download
+RUN chmod +x /dockervc/upload
+RUN chmod +x /dockervc/report
+
+ENV SERVER_URL %s
+ENV INPUT_URL %s
+ENV WORKUNIT_ID %s
+"""
+
+    dockerfile = dockerfile.replace("RUN dockervc_init", init_script % (config.server_url, \
+        input_url, workunit_id))
+
+    f = open("Dockerfile", "wb")
+    f.write(dockerfile)
+    f.close()
+
+    print "Dockerfile generated"
+
+def start_container():
+    print "Building docker image..."
+    os.system("sudo docker build -t dockervc/workunit .")
+    print "Starting docker container..."
+    os.system("sudo docker run dockervc/workunit")
+    print "Workunit fished\n"
 
 def execute(args):
     if args[1] == "list":
