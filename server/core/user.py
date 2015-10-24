@@ -8,12 +8,6 @@ import jwt
 
 user = Blueprint("user", __name__)
 
-@user.route('/user', methods=['GET'])
-def get_user():
-    resp = make_response(json.dumps({"msg": "Hello World"}), 200)
-    resp.headers["Content-Type"] = "application/json"
-    return resp
-
 @user.route('/user', methods=['POST'])
 def register_user():
     req_body = json.loads(request.data)
