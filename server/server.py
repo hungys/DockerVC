@@ -16,6 +16,8 @@ from core.project import project
 app.register_blueprint(project, url_prefix="/api")
 from core.application import application
 app.register_blueprint(application, url_prefix="/api")
+from core.input import input
+app.register_blueprint(input, url_prefix="/api")
 
 @app.before_request
 def before_request():

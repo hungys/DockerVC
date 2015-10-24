@@ -73,6 +73,7 @@ def delete_app(app_id):
         abort(404)
 
     g.db.application.remove({"_id": ObjectId(app_id)})
+    g.db.input.remove({"application_id": ObjectId(app_id)})
 
     return '', 200
 
