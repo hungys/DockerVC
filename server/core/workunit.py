@@ -11,6 +11,7 @@ import jwt
 workunit = Blueprint("workunit", __name__)
 
 @workunit.route('/app/<app_id>/workunit', methods=['GET'])
+@auth.login_required
 def get_workunit(app_id):
     app_data = g.db.application.find_one({"_id": ObjectId(app_id)})
     if app_data is None:
@@ -23,7 +24,7 @@ def get_workunit(app_id):
 
     new_workunit = {
         "input_id": str(input_data["_id"]),
-        "user_id": "",
+        "user_id": g.user_id,
         "status": "assigned",
         "output_url": ""
     }
