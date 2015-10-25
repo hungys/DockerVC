@@ -77,11 +77,11 @@ def index_page():
 
     return render_template("index.html", project_list=project_list)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
-
 # if __name__ == '__main__':
-#     http_server = HTTPServer(WSGIContainer(app))
-#     http_server.listen(5000)
-#     print "Flask app starting..."
-#     IOLoop.instance().start()
+#     app.run(host='0.0.0.0', debug=True)
+
+if __name__ == '__main__':
+    http_server = HTTPServer(WSGIContainer(app))
+    http_server.listen(5000)
+    print "Flask app starting..."
+    IOLoop.instance().start()
