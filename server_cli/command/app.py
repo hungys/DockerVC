@@ -118,3 +118,10 @@ def execute(args):
         app_update(args[2:])
     elif args[1] == "delete":
         app_delete(args[2:])
+
+def display_help():
+    print "- app"
+    print "    - app list <codename>: show all apps of the project"
+    print "    - app create <codename>: create a new app"
+    print "    - app update <project_id>: update a app"
+    print "    - app delete <project_id>: delete a app"

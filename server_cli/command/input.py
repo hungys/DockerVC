@@ -103,3 +103,10 @@ def execute(args):
         input_update(args[2:])
     elif args[1] == "delete":
         input_delete(args[2:])
+
+def display_help():
+    print "- input"
+    print "    - input list <app_id>: show all inputs of the project"
+    print "    - input create <app_id>: create a new input"
+    print "    - input update <input_id>: update a input"
+    print "    - input delete <input_id>: delete a input"

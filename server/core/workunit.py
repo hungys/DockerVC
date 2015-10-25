@@ -52,6 +52,8 @@ def get_workunit(app_id):
             "input_url": input_data["input_url"],
         }
 
+        print "Input %s is assigned to %s" % (str(input_data["_id"]), g.user["email"])
+
     resp = make_response(json.dumps(resp_body), 200)
     resp.headers["Content-Type"] = "application/json"
     return resp
@@ -66,6 +68,7 @@ def update_workunit(workunit_id):
 
     if "status" in req_body:
         set_body["status"] = req_body["status"]
+        print "Workunit %s is %s" % (workunit_id, req_body["status"])
     if "output_url" in req_body:
         set_body["output_url"] = req_body["output_url"]
         if not set_body["output_url"].startswith("http"):

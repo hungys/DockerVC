@@ -11,6 +11,10 @@ def execute_command(command):
         mod_project.execute(token)
     elif token[0] == "app":
         mod_app.execute(token)
+    elif token[0] == "help":
+        mod_user.display_help()
+        mod_project.display_help()
+        mod_app.display_help()
     elif token[0] == "exit":
         sys.exit(0)
 

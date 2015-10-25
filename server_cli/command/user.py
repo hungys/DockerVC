@@ -55,3 +55,8 @@ def execute(args):
         user_register(args[2:])
     elif args[1] == "auth":
         user_auth(args[2:])
+
+def display_help():
+    print "- user"
+    print "    - user register: register for a new account"
+    print "    - user register: authorize your account"

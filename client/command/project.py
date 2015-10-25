@@ -18,3 +18,7 @@ def project_list(args):
 def execute(args):
     if args[1] == "list":
         project_list(args[2:])
+
+def display_help():
+    print "- project"
+    print "    - project list: show all projects"

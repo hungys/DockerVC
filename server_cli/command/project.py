@@ -91,3 +91,10 @@ def execute(args):
         project_update(args[2:])
     elif args[1] == "delete":
         project_delete(args[2:])
+
+def display_help():
+    print "- project"
+    print "    - project list: show all projects"
+    print "    - project create: create a new project"
+    print "    - project update <codename>: update a project"
+    print "    - project delete <codename>: delete a project"

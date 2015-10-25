@@ -31,7 +31,8 @@ def before_request():
     if auth_header is not None and auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
         payload = jwt.decode(token, config.SERVER_SECRET, algorithms=['HS256'])
-        if g.db.user.find({"_id": ObjectId(payload["user_id"])}).count() > 0:
+        g.user = g.db.user.find_one({"_id": ObjectId(payload["user_id"])})
+        if g.user is not None:
             g.user_id = payload["user_id"]
 
 @app.after_request
@@ -62,11 +63,11 @@ def unauthorized(error):
 def not_found(error):
     return make_response(json.dumps({"msg": "Not found"}), 404)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
-
 # if __name__ == '__main__':
-#     http_server = HTTPServer(WSGIContainer(app))
-#     http_server.listen(5000)
-#     print "Flask app starting..."
-#     IOLoop.instance().start()
+#     app.run(host='0.0.0.0', debug=True)
+
+if __name__ == '__main__':
+    http_server = HTTPServer(WSGIContainer(app))
+    http_server.listen(5000)
+    print "Flask app starting..."
+    IOLoop.instance().start()

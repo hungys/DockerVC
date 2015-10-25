@@ -96,3 +96,8 @@ def execute(args):
         app_list(args[2:])
     elif args[1] == "start":
         app_start(args[2:])
+
+def display_help():
+    print "- app"
+    print "    - app list <codename>: show all apps of the project"
+    print "    - app start <app_id>: start to run the app"
