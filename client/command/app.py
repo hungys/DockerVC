@@ -87,7 +87,7 @@ def start_container():
         os.system("sudo docker run dockervc/workunit")
         print "Workunit fished\n"
     elif os.name == "nt":
-        generate_vagrantfile()
+        generate_vagrantfile(1, 50, 1024)
         subprocess.call(["provision.bat"], shell=True)
     else:
         print "[Error] unsupported platform"
