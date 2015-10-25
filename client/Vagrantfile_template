@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "dduportal/boot2docker"
+
+  config.vm.synced_folder ".", "/vagrant", type:"rsync"
+    #config.ssh.timeout = 1
+  config.vm.box_check_update = false
+
+config.vm.provider "virtualbox" do |vb|
+      vb.memory = ENV['mem']
+           vb.cpus = ENV['cpus']
+	        vb.customize ["modifyvm", :id, "--cpuexecutioncap", ENV['cap']]
+		   end
+
+config.vm.provision "docker" do |d|
+    d.build_image "/vagrant", args: "-t=hw"
+    end
+end

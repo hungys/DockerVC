@@ -87,9 +87,31 @@ def start_container():
         os.system("sudo docker run dockervc/workunit")
         print "Workunit fished\n"
     elif os.name == "nt":
-        os.system("")
+        generate_vagrantfile()
+        subprocess.call(["provision.bat"], shell=True)
     else:
         print "[Error] unsupported platform"
+
+def generate_vagrantfile(cpu, cap, mem):
+    subprocess.call(["COPY", "/Y", "Vagrantfile_template", "Vagrantfile"], shell=True)
+
+    f = open('Vagrantfile', 'a')
+    if cpu == 0:
+        cpu = 1
+
+    if cap == 0:
+        cap = 50
+
+    if mem == 0:
+        mem = 1024
+
+    cpustring = "ENV['cpus'] = \"" + str(cpu) + "\"\n"
+    capstring = "ENV['cap'] = \"" + str(cap) + "\"\n"
+    memstring = "ENV['mem'] = \"" + str(mem) + "\"\n"
+
+    f.write(cpustring)
+    f.write(capstring)
+    f.write(memstring)
 
 def execute(args):
     if args[1] == "list":
