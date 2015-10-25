@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-us">
+   <head>
+      <meta charset="UTF-8">
+      <title>DockerVC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="static/css/normalize.css">
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="static/css/cayman.css">
+   </head>
+   <body>
+      <section class="page-header">
+         <h1 class="project-name">DockerVC</h1>
+         <h2 class="project-tagline">Ship your challenge, attack it anywhere!</h2>
+         <a href="https://github.com/hungys/DockerVC" class="btn">View on GitHub</a>
+      </section>
+      <section class="main-content">
+         {% for project in project_list %}
+         <h1>
+            <a id="user-content-header-1" class="anchor" href="#header-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>{{project["name"]}}
+         </h1>
+         <p>
+         <ul class="task-list">
+            <li><b>Project {{project["codename"]}}</b></li>
+            <li>{{project["summary"]}}</li>
+         </ul>
+         </p>
+         {% for app in project["apps"] %}
+         <h3>
+            <a id="user-content-header-3" class="anchor" href="#header-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>{{app["name"]}}
+         </h3>
+         <pre><code>$ app start {{app["_id"]}}</code></pre>
+         {% endfor %}
+         {% endfor %}
+         <footer class="site-footer">
+            <span class="site-footer-owner"><a href="https://github.com/hungys/DockerVC">DockerVC</a> is a project for <a href="hackathon.nctu.edu.tw">2015 Mei-Chu Hackathon</a>.</span>
+            <span class="site-footer-credits">Developer: <a href="mailto:hungys@hotmail.com">Yu-Hsin Hung</a> and <a href="mailto:koosan1120@hotmail.com">Chun-Kuei Huang</a></span>
+         </footer>
+      </section>
+   </body>
+</html>

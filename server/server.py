@@ -1,15 +1,16 @@
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from flask import Flask, g, request, make_response
+from flask import Flask, g, request, make_response, render_template, send_from_directory
 from core.database import connect_db
 from core.permission import auth
 from bson.objectid import ObjectId
 import json
 import jwt
 import config
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 
 from core.user import user
 app.register_blueprint(user, url_prefix="/api")
@@ -63,11 +64,24 @@ def unauthorized(error):
 def not_found(error):
     return make_response(json.dumps({"msg": "Not found"}), 404)
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', debug=True)
+@app.route('/static/<path:path>')
+def send_static_file(path):
+    return send_from_directory("static", path)
+
+@app.route('/', methods=['GET'])
+def index_page():
+    project_list = list(g.db.project.find())
+    for project in project_list:
+        project["apps"] = list(g.db.application.find({"project_id": project["_id"]}))
+        print project["apps"]
+
+    return render_template("index.html", project_list=project_list)
 
 if __name__ == '__main__':
-    http_server = HTTPServer(WSGIContainer(app))
-    http_server.listen(5000)
-    print "Flask app starting..."
-    IOLoop.instance().start()
+    app.run(host='0.0.0.0', debug=True)
+
+# if __name__ == '__main__':
+#     http_server = HTTPServer(WSGIContainer(app))
+#     http_server.listen(5000)
+#     print "Flask app starting..."
+#     IOLoop.instance().start()
